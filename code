@@ -1,0 +1,75 @@
+define ULTRASONIC SENSOR TRIG 11
+define ULTRASONIC SENSOR ECHO 12
+int enableRightMotor = 8;
+int rightMotorPin1 = 2;
+int rightMotorPin2 = 3;
+int enableLeftMotor = 9;
+int leftMotorPin1 = 4;
+int leftMotorPin2 = 5;
+int potPin = A0;
+long duration;
+int distance;
+int baseSpeed;
+int followSpeed;
+void setup()
+Serial.begin(9600);
+pinMode(enableRightMotor, OUTPUT);
+pinMode(rightMotorPin1, OUTPUT);
+pinMode(rightMotorPin2, OUTPUT);
+pinMode(enableLeftMotor, OUTPUT);
+pinMode(leftMotorPin1, OUTPUT);
+pinMode(leftMotorPin2, OUTPUT);
+pinMode(ULTRASONICSENSORTRIG, OUT P UT);
+pinMode(ULT RASONICSENSORECHO, INP UT);
+stopMotors();
+}
+void loop() {
+int potValue = analogRead(potPin);
+baseSpeed = map(potValue, 0, 1023, 0, 255);
+distance = getDistance();
+Serial.print(”Distance: ”);
+Serial.print(distance);
+Serial.print(” cm — Base Speed: ”);
+Serial.println(baseSpeed);
+if (distance ¿ 10 distance ¡= 50)
+float factor = (50 - distance) / 40.0;
+10
+followSpeed = baseSpeed * factor;
+moveForward(followSpeed);
+}
+else if (distance ¿ 5 distance ¡= 10)
+followSpeed = baseSpeed * 0.3;
+moveForward(followSpeed);
+}
+else if (distance ¿ 0 distance ¡= 5)
+stopMotors();
+else
+moveForward(baseSpeed);
+}
+delay(100);
+}
+int getDistance()
+digitalWrite(ULTRASONICSENSORTRIG, LOW);
+delayM icroseconds(2);
+digitalW rite(ULT RASONICSENSORTRIG, HIGH);
+delayM icroseconds(10);
+digitalW rite(ULT RASONICSENSORTRIG, LOW);
+duration = pulseIn(ULT RASONICSENSORECHO, HIGH, 20000);
+returnduration ∗ 0.034/2;
+}
+void moveForward(int speed)
+analogWrite(enableRightMotor, speed);
+analogWrite(enableLeftMotor, speed);
+digitalWrite(rightMotorPin1, HIGH);
+digitalWrite(rightMotorPin2, LOW);
+digitalWrite(leftMotorPin1, LOW);
+digitalWrite(leftMotorPin2, HIGH);
+}
+void stopMotors()
+analogWrite(enableRightMotor, 0);
+analogWrite(enableLeftMotor, 0);
+digitalWrite(rightMotorPin1, LOW);
+digitalWrite(rightMotorPin2, LOW);
+digitalWrite(leftMotorPin1, LOW);
+digitalWrite(leftMotorPin2, LOW);
+}
